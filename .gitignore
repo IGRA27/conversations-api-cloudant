@@ -1,0 +1,106 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.env/
+.venv/
+.env
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code settings (opcional si usas VSCode)
+.vscode/
+
+# Pytest cache
+.pytest_cache/
+
+# mypy, pyre, pytype static type checker cache
+.mypy_cache/
+.pyre/
+.pytype/
+
+# FastAPI / Uvicorn log files
+*.log
+
+# Python dependency files (si generas archivos)
+poetry.lock
+Pipfile.lock
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# MacOS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+docker-compose.dev.yml
+.dockerignore
+
+# Build artifacts
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Sphinx documentation
+docs/_build/
+
+# Unit test / coverage reports
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+
+# Pydantic cache (si usas modelos Pydantic)
+*.pydantic_cache/
+
+# Database files (SQLite por ejemplo)
+*.sqlite3
+*.db
+
+# Environment variables files
+*.env
+*.env.*
+
+# Local runtime files
+*.pid
+
+# Static / media files (si tienes uploads o archivos servidos)
+staticfiles/
+media/
+
+# Node modules (en caso de tener frontend en el mismo repo)
+node_modules/
+
+# Other OS generated files
+Thumbs.db
+ehthumbs.db

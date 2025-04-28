@@ -5,7 +5,7 @@ from datetime import datetime
 from .cloudant_client import db
 
 class Message(BaseModel):
-    type: str   # "user" o "bot"
+    type: str   #"user" o "bot"
     text: str
 
 class ConversationIn(BaseModel):
@@ -28,9 +28,9 @@ def store_conversation(conv: ConversationIn):
 
 @app.get("/conversations/{email}", response_model=List[ConversationIn])
 def get_conversations(email: EmailStr):
-    #Consulta todos los docs con este user_email
     results = []
-    for doc in db.get_query_result({"selector": {"user_email": email}}):
+    selector = {"selector": {"user_email": email}}
+    for doc in db.get_query_result(selector):
         results.append({
             "user_email": doc["user_email"],
             "messages": doc["messages"]
@@ -39,7 +39,6 @@ def get_conversations(email: EmailStr):
 
 @app.get("/conversations/", response_model=List[ConversationIn])
 def get_all_conversations():
-    #Trae todos los documentos (NOTA ISAAC:¡cuidado con volumen muy alto!)
     results = []
     for doc in db:
         results.append({

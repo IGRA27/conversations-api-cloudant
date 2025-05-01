@@ -1,48 +1,42 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, EmailStr
-from typing import List
+from fastapi import FastAPI, HTTPException, Query
+from pydantic import BaseModel
+from typing import List, Optional
 from datetime import datetime
 from .cloudant_client import db
 
 class Message(BaseModel):
-    type: str   #"user" o "bot"
+    type: str   # p.e. "user" o "assistant"
     text: str
 
-class ConversationIn(BaseModel):
-    user_email: EmailStr
+class Conversation(BaseModel):
+    user_id: str
     messages: List[Message]
 
 app = FastAPI()
 
-@app.post("/conversations/", status_code=201)
-def store_conversation(conv: ConversationIn):
+@app.post("/conversations/", status_code=201, response_model=dict)
+def store_conversation(conv: Conversation):
     doc = {
-        "user_email": conv.user_email,
+        "user_id":  conv.user_id,
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "messages": [m.dict() for m in conv.messages]
     }
-    response = db.create_document(doc)
-    if not response.exists():
-        raise HTTPException(500, "Error al guardar en Cloudant")
-    return {"id": response["_id"], "ok": True}
+    resp = db.create_document(doc)
+    if not resp.exists():
+        raise HTTPException(status_code=500, detail="Error al guardar en Cloudant")
+    return {"id": resp["_id"], "ok": True}
 
-@app.get("/conversations/{email}", response_model=List[ConversationIn])
-def get_conversations(email: EmailStr):
+@app.get("/conversations/", response_model=List[Conversation])
+def get_conversations(user_id: Optional[str] = Query(None, description="Filtrar por user_id")):
     results = []
-    selector = {"selector": {"user_email": email}}
-    for doc in db.get_query_result(selector):
+    if user_id:
+        selector = {"selector": {"user_id": user_id}}
+        docs = db.get_query_result(selector)
+    else:
+        docs = db
+    for d in docs:
         results.append({
-            "user_email": doc["user_email"],
-            "messages": doc["messages"]
-        })
-    return results
-
-@app.get("/conversations/", response_model=List[ConversationIn])
-def get_all_conversations():
-    results = []
-    for doc in db:
-        results.append({
-            "user_email": doc["user_email"],
-            "messages": doc["messages"]
+            "user_id":  d.get("user_id"),
+            "messages": d.get("messages", [])
         })
     return results

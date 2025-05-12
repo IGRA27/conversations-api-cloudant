@@ -28,12 +28,14 @@ def store_conversation(conv: Conversation):
 
 @app.get("/conversations/", response_model=List[Conversation])
 def get_conversations(user_id: Optional[str] = Query(None, description="Filtrar por user_id")):
-    results = []
+    # Si se pasa user_id, filtramos; si no, devolvemos todos
     if user_id:
         selector = {"selector": {"user_id": user_id}}
         docs = db.get_query_result(selector)
     else:
         docs = db
+    # Mapeamos al modelo de salida
+    results = []
     for d in docs:
         results.append({
             "user_id":  d.get("user_id"),
